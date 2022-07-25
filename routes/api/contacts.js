@@ -1,81 +1,25 @@
 const express = require('express');
-const Joi = require('joi');
 
-const contacts = require("../../models/contacts");
+const ctrl = require("../../controllers/contacts");
 
-const {createError} = require("../../helpers");
+const { ctrlWrapper } = require('../../helpers');
+
+const { validateBody, validateParams } = require('../../middlewares');
+
+const { contactAddData, favoriteScheme } = require('../../sheme');
 
 const router = express.Router();
 
-const contactAddData = Joi.object({
-  name: Joi.string().required(),
-  email: Joi.string().required(),
-  phone: Joi.string().required()
-})
+router.get('/', ctrlWrapper(ctrl.allContacts));
 
-router.get('/', async (req, res, next) => {
-  const result = await contacts.listContacts();
-  res.json(result);
-  next();
-});
+router.get('/:contactId', validateParams, ctrlWrapper(ctrl.getContactById));
 
-router.get('/:contactId', async (req, res, next) => {
-   try {
-    const { contactId } = req.params;
-    const contact = await contacts.getContactById(contactId);
+router.post('/', validateBody(contactAddData), ctrlWrapper(ctrl.addContact));
 
-      if(!contact) {
-            throw createError(404);
-        }
-        res.json(contact)
-    } catch (error) {
-        next(error);
-    }
-});
+router.patch('/:contactId/favorite', validateParams, validateBody(favoriteScheme), ctrlWrapper(ctrl.updateStringContact));
 
-router.post('/', async (req, res, next) => {
-  try {
-    const { error } = contactAddData.validate(req.body);
-    if (error) {
-      throw createError(400, error.message);
-    }
-    const result = await contacts.addContact(req.body);
-    res.status(201).json(result);
-  } catch (error) {
-        next(error);
-    }
-});
+router.delete('/:contactId', validateParams, ctrlWrapper(ctrl.removeContact));
 
-router.delete('/:contactId', async (req, res, next) => {
- try {
-        const { contactId } = req.params;
-        const result = await contacts.removeContact(contactId);
-        if(!result){
-            throw createError(404)
-        }
-        res.json({
-            message: "Book deleted"
-        })
-    } catch (error) {
-        next(error);
-    }
-});
-
-router.put('/:contactId', async (req, res, next) => {
-    try {
-        const {error} = contactAddData.validate(req.body);
-        if(error) {
-            throw createError(400, error.message);
-        }
-        const {contactId} = req.params;
-        const result = await contacts.updateContactById(contactId, req.body);
-        if(!result) {
-            throw createError(404);
-        }
-        res.json(result);
-    } catch (error) {
-        next(error);
-    }
-});
+router.put('/:contactId', validateParams, validateBody(contactAddData), ctrlWrapper(ctrl.updateContact));
 
 module.exports = router
