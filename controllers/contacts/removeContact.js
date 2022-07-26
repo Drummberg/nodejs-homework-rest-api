@@ -1,10 +1,9 @@
-const { Contact } = require('../../models/index');
+const repository = require('../../services/repository');
 const { createError } = require("../../helpers");
 
 const removeContact = async (req, res, next) => {
  try {
-        const { contactId } = req.params;
-        const result = await Contact.findByIdAndRemove(contactId);
+        const result = await repository.removeContact(req.params.contactId);
         if(!result){
             throw createError(404)
         }

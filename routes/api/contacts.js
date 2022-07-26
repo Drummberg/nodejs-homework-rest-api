@@ -12,11 +12,11 @@ const router = express.Router();
 
 router.get('/', ctrlWrapper(ctrl.allContacts));
 
-router.get('/:contactId', validateParams, ctrlWrapper(ctrl.getContactById));
+router.get('/:id', validateParams, ctrlWrapper(ctrl.getContactById));
 
 router.post('/', validateBody(contactAddData), ctrlWrapper(ctrl.addContact));
 
-router.patch('/:contactId/favorite', validateParams, validateBody(favoriteScheme), ctrlWrapper(ctrl.updateStringContact));
+router.patch('/:id/favorite', validateParams, validateBody(favoriteScheme), ctrlWrapper(ctrl.updateStringContact));
 
 router.delete('/:contactId', validateParams, ctrlWrapper(ctrl.removeContact));
 
