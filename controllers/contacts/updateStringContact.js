@@ -1,9 +1,8 @@
-const { Contact } = require('../../models/index');
+const repository = require('../../services/repository');
 const { createError } = require("../../helpers");
 
-const updateStringContact = async (req, res) => {
-        const {contactId} = req.params;
-        const result = await Contact.findByIdAndUpdate(contactId, req.body, {new: true});
+const updateStringContact = async (req, res, next) => {
+        const result = await repository.updateStringContact(req.params.contactId, req.value);
         if(!result) {
             throw createError(404);
         }

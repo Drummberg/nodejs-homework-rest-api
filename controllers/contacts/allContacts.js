@@ -1,11 +1,11 @@
-const { Contact } = require('../../models/index');
+const repository = require('../../services/repository');
 
-const allContacts = async (req, res) => {
-  const result = await Contact.find();
+const allContacts = async (req, res, next) => {
+  const contacts = await repository.getAll();
     res.json({
         status: 'success',
         code: 200,
-        data: { result }
+        payload: { contacts }
     });
 }
 
