@@ -21,8 +21,8 @@ const userSchema = Schema({
 },
     token: {
         type: String,
-        default: null,
-}
+        default: null
+    }
 }, { verisonKey: false, timestamps: true })
 
 const User = model('user', userSchema);
