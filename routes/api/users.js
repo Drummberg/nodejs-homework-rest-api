@@ -15,6 +15,9 @@ router.post('/login', validateBody(signupSchema), ctrlWrapper(ctrl.login));
 
 router.get('/current', user, ctrlWrapper(ctrl.getCurrent));
 
+router.get('/logout', user, ctrlWrapper(ctrl.logout));
+
+router.patch('/', user, ctrlWrapper(ctrl.updateUser));
 
 
 module.exports = router;

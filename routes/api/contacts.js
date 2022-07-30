@@ -4,17 +4,17 @@ const ctrl = require("../../controllers/contacts");
 
 const { ctrlWrapper } = require('../../helpers');
 
-const { validateBody, validateParams } = require('../../middlewares');
+const { validateBody, validateParams, user } = require('../../middlewares');
 
 const { contactAddData, favoriteScheme } = require('../../sheme/contact');
 
 const router = express.Router();
 
-router.get('/', ctrlWrapper(ctrl.allContacts));
+router.get('/', user, ctrlWrapper(ctrl.allContacts));
 
 router.get('/:id', validateParams, ctrlWrapper(ctrl.getContactById));
 
-router.post('/', validateBody(contactAddData), ctrlWrapper(ctrl.addContact));
+router.post('/', user, validateBody(contactAddData), ctrlWrapper(ctrl.addContact));
 
 router.patch('/:id/favorite', validateParams, validateBody(favoriteScheme), ctrlWrapper(ctrl.updateStringContact));
 
