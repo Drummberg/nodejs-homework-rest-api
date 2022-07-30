@@ -9,7 +9,7 @@ const getAll = async (req) => {
     if (favorite) {
         query = {...query, favorite};
     }
-    const result = await Contact.find(query, '', {skip, limit: Number(limit)}).populate('owner', '_id, name, email');
+    const result = await Contact.find({query}, '', {skip, limit: Number(limit)}).populate('owner', '_id, name, email');
         return result;
     };
 
