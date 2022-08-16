@@ -1,8 +1,9 @@
 const { User } = require('../../models');
 const { signupSchema } = require('../../sheme/user');
-const { createError } = require("../../helpers");
+const { createError, sendEmail } = require("../../helpers");
 const bcrypt = require('bcrypt');
 const gravatar = require('gravatar');
+const {nanoid} = require("nanoid");
 
 const signup = async (req, res) => {
     const { error } = signupSchema.validate(req.body);
@@ -17,8 +18,18 @@ const signup = async (req, res) => {
     }
 
     const avatarURL = gravatar.url(email);
+    const verificationToken = nanoid();
     const hashPassword = await bcrypt.hash(password, 10);
-    await User.create({ email, password: hashPassword, subscription, avatarURL, token });
+
+    await User.create({ email, password: hashPassword, verificationToken, subscription, avatarURL, token });
+    
+    const mail = {
+        to: email,
+        subject: "Подтверждение регистрации на сайте",
+        html: `<a target="_blank" href="http://localhost:3000/api/auth/verify/${verificationToken}">Нажмите для подтверждения регистрации</a>`
+    }
+    await sendEmail(mail);
+
     res.status(201).json({
         user: {
             email,
