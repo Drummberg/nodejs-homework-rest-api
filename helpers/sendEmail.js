@@ -24,4 +24,17 @@ const emailOptions = {
 transporter
   .sendMail(emailOptions)
   .then(info => console.log(info))
-  .catch(err => console.log(err));
+    .catch(err => console.log(err));
+  
+const sendEmail = async (data) => {
+   // eslint-disable-next-line no-useless-catch
+   try {
+       const email = { ...data, from: "drummberg@meta.ua" };
+       await transporter.sendMail(email);
+       return true;
+    } catch (error) {
+        throw error;
+    }
+}
+
+module.exports = sendEmail;    
