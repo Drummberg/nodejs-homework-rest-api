@@ -8,11 +8,17 @@ const { SECRET_KEY } = process.env;
 
 const login = async (req, res) => {
     const { error } = loginSchema.validate(req.body);
+
     if (error) {
-        throw createError(400, 'Email is wrong'); 
+        throw createError(401, 'Email is wrong'); 
     }
+
     const {email, password} = req.body;
     const user = await User.findOne({ email });
+
+    if(!user.verify){
+        throw createError(401, "Email not verify");
+    }
     
     const comparePassword = bcrypt.compare(password, user.password);
     if (!user || !comparePassword) {
